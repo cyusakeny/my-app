@@ -60,6 +60,7 @@ setstaet({message:'',name})
     <div>
         <h1>Chat Log</h1>
         {renderChat()}
+        <input type="text" placeholder="&#xF007; Username" style={{fontFamily:"FontAwesome"}} />
       </div>
     </div>
   );
