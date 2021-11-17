@@ -1,31 +1,21 @@
 import React,{useState,useRef,useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import io from "socket.io-client"
 import TextField  from "@material-ui/core/TextField";
+import { connect } from "react-redux";
 
-
-const  Join=()=> {
+const  Join=(props)=> {
   const navigate = useNavigate();
-  const socketRef = useRef()
-  const [state, setState] = useState({ UserName: "",RoomName: ""});
- useEffect(()=>{
-  var connectionOptions =  {
-    transports: ['websocket'],
-    'sync disconnect on unload': true
-  }
-  socketRef.current = io.connect("http://localhost:4000",connectionOptions)
- })
  const HandleRoutes=()=>{
 navigate("/chat");
  } 
 
  const OnTextChange = (event)=>{
-setState({...state,[event.target.name]:event.target.value});
-console.log("Name:"+state.UserName);
+
+console.log("Name:");
   }
   const OnMessageSubmit =(e)=>{
 e.preventDefault()
-socketRef.current.emit("JoinChatRoom",state);
+this.OnUpdateState();
 HandleRoutes();
   }
   const renderChat=()=>{
@@ -50,9 +40,19 @@ HandleRoutes();
     <div>
         <h1>Chat Log</h1>
         {renderChat()}
+        {console.log("Dax:"+props.First.UserName)}
       </div>
     </div>
   );
 }
-
-export default Join;
+ const mapStateToProps=state=>{
+   return {
+    First : state.FirstState
+   }
+ }
+ const mapDispatchToProps = dispatch =>{
+   return{
+     OnUpdateState:()=> dispatch({type:'UPDATESTATE'})
+   }
+ }
+export default connect(mapStateToProps,mapDispatchToProps)(Join) ;
