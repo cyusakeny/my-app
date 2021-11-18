@@ -1,24 +1,15 @@
-import React,{useState,useRef,useEffect} from "react";
-import io from "socket.io-client"
-const Chat=()=>{
-    const socketRef = useRef()
-    const [state, setState] = useState({ UserId: "",UserName: "",ChatRoom:""});
-    // useEffect(()=>{
-    //     var connectionOptions =  {
-    //         transports: ['websocket'],
-    //         'sync disconnect on unload': true
-    //       }
-    //       socketRef.current = io.connect("http://localhost:4000",connectionOptions)
-    //       socketRef.current.on("GetMyUser",(UserName,RoomName,UserId)=>{
-    //           console.log("Dax1:"+UserName)
-    //           console.log("Dax1:"+RoomName)
-    //           console.log("Dax1:"+UserId)
-    //       })
-    // })
+import React from "react";
+import { connect } from "react-redux";
+const Chat=(props)=>{
 return(
     <div>
-        <p>Hello</p>
+        <p>Hello {props.first}</p>
     </div>
 );
 }
-export default Chat;
+const mapStateToProps = state=>{
+    return {
+  first:state.User.name,
+    };
+  }
+export default connect(mapStateToProps)(Chat);

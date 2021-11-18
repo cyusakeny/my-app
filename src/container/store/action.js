@@ -1,4 +1,1 @@
-const Action = ()=>{
-console.log("Kent")
-}
-export default Action;
+export const JoinRoom ='OnJoinRoom'
