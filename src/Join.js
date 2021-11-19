@@ -1,27 +1,30 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 import TextField  from "@material-ui/core/TextField";
-import { connect } from "react-redux";
 import  * as ToBe from './container/store/action'
-
-let username;
-let roomname;
+import { connect } from "react-redux";
+import {io} from'socket.io-client'
+let Username
+let roomname
 const  Join=(props)=> {
-  const navigate = useNavigate();
- const HandleRoutes=()=>{
+const {dispatch,User} = props,
+ socketRef= io.connect("http://localhost:4000",{ transports: ['websocket', 'polling', 'flashsocket'] })
+socketRef.on("GetMyUser",(username,Roomname,id)=>{
+  dispatch(ToBe.UserData(username,Roomname,id))
+})
+const navigate = useNavigate();
+const HandleRoutes=()=>{
 navigate("/chat");
  } 
-
- const OnUserChange = (event)=>{
-username = event.target.value
-console.log(username);
-  }
-  const OnRoomChange = (event)=>{
-    roomname = event.target.value
-    console.log(roomname);
-      }
-  const OnMessageSubmit =(e)=>{
+const OnUserChange=(event)=>{
+Username = event.target.value
+}
+const OnRoomChange=(event)=>{
+roomname=event.target.value
+}
+const OnMessageSubmit =(e)=>{
 e.preventDefault()
+socketRef.emit("JoinChatRoom",Username,roomname)
 HandleRoutes();
   }
   const renderChat=()=>{
@@ -32,6 +35,7 @@ HandleRoutes();
     ) 
     
   }
+
 
   return (
     <div className="App">
@@ -47,21 +51,12 @@ HandleRoutes();
     <div>
         <h1>Chat Log</h1>
         {renderChat()}
-        {props.first}
+        {User.name}
       </div>
     </div>
   );
-}
-const mapStateToProps = state=>{
-  return {
-first:state.User.name,
-  };
-}
-const mapDispatchToProps = dispatch =>{
-  return{
-    OnUpdateState :()=> dispatch({type:ToBe.JoinRoom,Username:username,Roomname:roomname})
-  }
- 
-
-}
-export default connect(mapStateToProps,mapDispatchToProps)(Join) ;
+} 
+const mapStateToProps = (state = {}) => {
+    return {...state};
+};
+export default connect(mapStateToProps)(Join);
