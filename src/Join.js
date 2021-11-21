@@ -12,17 +12,20 @@ const {dispatch}=props;
 socketRef.current = io.connect("http://localhost:1650",{ transports: ['websocket'] }) 
 const navigate = useNavigate()
 useEffect(()=>{ 
-
   const HandleRoutes=()=>{
     navigate("/chat");
      } 
-  socketRef.current.on("GetMyUser",(username,Roomname,id)=>{
-      console.log("Data arrived")
-    dispatch(ToBe.UserData(username,Roomname,id))
-    HandleRoutes();
- })
- return () => socketRef.current.disconnect()
+ socketRef.current.on("GetUserData",(username,Roomname,id)=>{
+  console.log("Data 1 arrived")
+dispatch(ToBe.UserData(username,Roomname,id))
+HandleRoutes();
+})
+socketRef.current.on("GetMyUser",(username,Roomname,id)=>{
+  dispatch(ToBe.NewUser(username,Roomname,id))
+  })
+   return () => socketRef.current.disconnect()
 },[dispatch,navigate])
+
 
 const OnUserChange=(event)=>{
 Username = event.target.value
@@ -33,6 +36,7 @@ roomname=event.target.value
 const OnMessageSubmit =(e)=>{
 e.preventDefault()
 socketRef.current.emit("JoinChatRoom",Username,roomname)
+console.log("MyId:",socketRef.current.id)
 }
 
   const renderChat=()=>{

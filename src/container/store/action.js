@@ -5,4 +5,10 @@ export const UserData = (name,id,roomname)=>({
     Id:id,
     roomname:roomname,
 })
+export const NewUser = (name,id,roomname)=>({
+    type:'NewUser',
+    name:name,
+    Id:id,
+    roomname:roomname
+})
 
